@@ -2,29 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Auth {
-  userId: String!
-  token: String!
-}
-
-type Brand {
-  _id: String!
-  name: String!
-}
-
-type Category {
-  _id: String!
-  ancestors: [String!]!
-  parent: String
-}
-
-type Store {
+type ShippingCompany {
   _id: String!
   name: String!
   description: String!
-  profilePic: String!
-  coverPic: String!
-  user: User!
+  type: String!
+}
+
+type Auth {
+  userId: String!
+  token: String!
 }
 
 type Product {
@@ -33,10 +20,6 @@ type Product {
   description: String!
   pictures: [String!]!
   price: Float!
-  status: String!
-  category: Category!
-  brand: Brand!
-  store: Store!
 }
 
 type Cart {
@@ -44,19 +27,25 @@ type Cart {
   quantity: Int!
 }
 
-type User {
+type Seller {
   _id: String!
+  fullName: String!
   email: String!
-  hash: String!
-  hashRerf: String!
-  phone: String!
-  address: String!
-  city: String!
-  country: String!
-  document: String!
-  permissions: [String!]!
-  cart: Cart!
-  store: String!
+  role: String!
+  status: String!
+  fiscale: String!
+  hashedPassword: String!
+  hashedRt: String!
+  store: Store!
+}
+
+type Store {
+  _id: String!
+  storeName: String!
+  description: String!
+  profilePic: String!
+  coverPic: String!
+  seller: Seller!
 }
 
 type Order {
@@ -64,16 +53,141 @@ type Order {
   userId: User!
 }
 
+type User {
+  _id: String!
+  name: String!
+  profilePic: String!
+  email: String!
+  hashedPassword: String!
+  hashedRt: String!
+  phone: String!
+  address: String!
+  city: String!
+  country: String!
+  document: String!
+  request: String!
+  sellerStatus: String!
+  roles: [String!]!
+  cart: Cart!
+  store: Store!
+  orders: [Order!]!
+}
+
+type Admin {
+  _id: String!
+  fullName: String!
+  email: String!
+  hashedPassword: String!
+  hashedRt: String!
+  roles: [String!]!
+}
+
+type SuperAdmin {
+  _id: String!
+  fullName: String!
+  email: String!
+  hashedPassword: String!
+  hashedRt: String!
+  permissions: [String!]!
+}
+
 type Query {
-  getAll: Order!
+  getAll: String!
+  testStore: String!
+  getAllAdmins: [Admin!]!
+  getAdminById(id: String!): Admin!
+  getAllShippingCompanies: [ShippingCompany!]!
+  getShippingCompanyById(id: String!): ShippingCompany!
 }
 
 type Mutation {
-  signIn(signinInput: signinInput!): Auth!
-  logOut: Auth!
+  signIn(signInInput: signInInput!): Auth!
+  signUp(signUpInput: signUpInput!): Auth!
+  logOut: Boolean!
+  createSeller(sellerInput: sellerInput!): Seller!
+  adminLogin(signinInput: signInInput!): Auth!
+  superAdminLogin(signInInput: signInInput!): Auth!
+  superAdminLogout: SuperAdmin!
+  CreateAdmin(createAdminInput: CreateAdminInput!): Admin!
+  UpdateAdmin(updateAdminInput: UpdateAdminInput!): Admin!
+  DeleteAdmin(id: String!): Admin!
+  handleSellerRequest(sellerRequestInput: SellerRequestInput!): User!
+  SellerAccountStatus(SellerAccountStatusInput: SellerAccountStatusInput!): User!
+  createShippingCompany(createShippingCompanyInput: CreateShippingCompanyInput!): ShippingCompany!
+  updateShippingCompany(updateShippingCompanyInput: UpdateShippingCompanyInput!): ShippingCompany!
+  deleteShippingCompany(id: String!): ShippingCompany!
+  addProduct(file: [Upload!]!, createProduct: CreateProduct!): Boolean!
 }
 
-input signinInput {
+input signInInput {
   email: String!
   password: String!
+}
+
+input signUpInput {
+  name: String!
+  profilePic: String
+  document: String
+  email: String!
+  password: String!
+  storeName: String!
+  phone: String!
+  country: String!
+  city: String!
+  address: String!
+}
+
+input sellerInput {
+  fullName: String!
+  email: String!
+  password: String!
+  hashedPassword: String!
+  status: String!
+  fiscale: String!
+  role: String!
+}
+
+input CreateAdminInput {
+  fullName: String!
+  email: String!
+  password: String!
+}
+
+input UpdateAdminInput {
+  id: String!
+  fullName: String
+  email: String
+  password: String
+}
+
+input SellerRequestInput {
+  userId: String!
+  request: String!
+}
+
+input SellerAccountStatusInput {
+  userId: String!
+  sellerStatus: String!
+}
+
+input CreateShippingCompanyInput {
+  name: String!
+  description: String!
+  type: String!
+}
+
+input UpdateShippingCompanyInput {
+  id: String!
+  name: String
+  description: String
+  type: String
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input CreateProduct {
+  title: String!
+  description: String!
+  price: Float!
 }
